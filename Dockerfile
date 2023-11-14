@@ -3,6 +3,8 @@ FROM python:3.10 as requirements-stage
 
 WORKDIR /tmp
 
+
+
 RUN pip install poetry
 
 COPY ./pyproject.toml ./poetry.lock* /tmp/
@@ -14,7 +16,13 @@ FROM python:3.10
 
 WORKDIR /code
 
+RUN pip install --upgrade pip
+
+RUN pip install setuptools_rust
+
 COPY --from=requirements-stage /tmp/requirements.txt /code/requirements.txt
+
+RUN cat /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 

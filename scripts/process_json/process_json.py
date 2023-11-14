@@ -10,15 +10,15 @@ from datastore.factory import get_datastore
 from services.extract_metadata import extract_metadata_from_document
 from services.pii_detection import screen_text_for_pii
 
-DOCUMENT_UPSERT_BATCH_SIZE = 50
+DOCUMENT_UPSERT_BATCH_SIZE = 100
 
 
 async def process_json_dump(
-    filepath: str,
-    datastore: DataStore,
-    custom_metadata: dict,
-    screen_for_pii: bool,
-    extract_metadata: bool,
+        filepath: str,
+        datastore: DataStore,
+        custom_metadata: dict,
+        screen_for_pii: bool,
+        extract_metadata: bool,
 ):
     # load the json file as a list of dictionaries
     with open(filepath) as json_file:
@@ -95,7 +95,7 @@ async def process_json_dump(
     # us to add more descriptive logging
     for i in range(0, len(documents), DOCUMENT_UPSERT_BATCH_SIZE):
         # Get the text of the chunks in the current batch
-        batch_documents = documents[i : i + DOCUMENT_UPSERT_BATCH_SIZE]
+        batch_documents = documents[i: i + DOCUMENT_UPSERT_BATCH_SIZE]
         logger.info(f"Upserting batch of {len(batch_documents)} documents, batch {i}")
         logger.info("documents: ", documents)
         await datastore.upsert(batch_documents)
